@@ -81,3 +81,19 @@ services:
     tty: true
     profiles:
       - donotstart
+      
+  mitmdump:
+    container_name: mitmproxy
+    image: mitmproxy/mitmproxy
+    entrypoint: ["/bin/sh", "-c", "
+      mkdir /home/mitmproxy/certs;
+      mitmdump -s /home/mitmproxy/proxy.py -k;
+    "]
+    tty: true
+    depends_on:
+      - server
+    ports:
+      - '8080:8080'
+    volumes:
+      - .:/home/mitmproxy/
+      - ./certs:/root/.mitmproxy/
